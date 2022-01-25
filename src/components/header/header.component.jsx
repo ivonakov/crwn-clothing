@@ -7,6 +7,8 @@ import './header.styles.scss'
 
 
 const Header = ( { currentUser } ) => (
+
+
     <div className='header'>
         <Link className="logo-container" to="/" >
             <Logo className="logo" />
@@ -20,9 +22,9 @@ const Header = ( { currentUser } ) => (
                 CONTACT
             </Link>
             { currentUser ?
-                <div className='option' onClick={ () => auth.signOut() }>
+                ( <div className='option' onClick={ () => auth.signOut() }>
                     SIGN OUT
-                </div>
+                </div> )
                 :
                 <Link className='option' to='/signin'>
                     SIGN IN
