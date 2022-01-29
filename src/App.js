@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
@@ -27,8 +27,8 @@ class App extends React.Component {
 
         userRef.onSnapshot( snapShot => {
           setCurrentUser( {
-              id: snapShot.id,
-              ...snapShot.data()
+            id: snapShot.id,
+            ...snapShot.data()
           } )
         } );
       }
@@ -48,7 +48,14 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={ HomePage } />
           <Route path='/shop' component={ ShopPage } />
-          <Route path='/signin' component={ SignInSignUpPage } />
+          <Route
+            exact
+            path='/signin'
+            render={ () =>
+              this.props.currentUser ?
+                ( <Redirect to='/' /> ) :
+                ( <SignInSignUpPage /> ) }
+          />
         </Switch>
       </div >
     );
@@ -56,10 +63,15 @@ class App extends React.Component {
 
 }
 
+const mapStateToProps = ( { user } ) => ( {
+  currentUser: user.currentUser
+} );
+
+
 const maDispatchToProps = dispatch => ( {
   setCurrentUser: user => dispatch( setCurrentUser( user ) )
 } )
 
 export default connect(
-  null, maDispatchToProps
+  mapStateToProps, maDispatchToProps
 )( App );
